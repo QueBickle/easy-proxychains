@@ -1,0 +1,59 @@
+# Edit proxychains configuration file
+alias pcconf="sudo nano /etc/proxychains4.conf"
+
+# Add a SOCKS5 proxy to proxychains config
+alias pcaddsocks5="echo 'socks5 ' | sudo tee -a /etc/proxychains4.conf"
+
+# Add an HTTP proxy to proxychains config
+alias pcaddhttp="echo 'http ' | sudo tee -a /etc/proxychains4.conf"
+
+# Remove all proxies from proxychains config
+alias pcclean="sudo sed -i '/^socks/d; /^http/d' /etc/proxychains4.conf"
+
+# List all proxies in the config file
+alias pclist="grep -E '^socks|^http' /etc/proxychains4.conf"
+
+# Find and add public SOCKS5 proxies
+alias pcfindsocks5="curl -s https://api.proxyscrape.com/v2/?request=getproxies&protocol=socks5 | head -n 5 | while read -r line; do echo "socks5 $line" | sudo tee -a /etc/proxychains4.conf; done"
+
+# Find and add public HTTP proxies
+alias pcfindhttp="curl -s https://api.proxyscrape.com/v2/?request=getproxies&protocol=http | head -n 5 | while read -r line; do echo "http $line" | sudo tee -a /etc/proxychains4.conf; done"
+
+# Test proxies in the config file
+alias pctestall="while read -r line; do proxychains4 curl -s ifconfig.me; echo " - $line"; done < <(grep -E '^socks|^http' /etc/proxychains4.conf)"
+
+# Remove non-working proxies
+alias pccleanfailed="sudo sed -i.bak '/^socks/d; /^http/d' /etc/proxychains4.conf && pctestall | grep -B1 "curl: " | grep -E '^socks|^http' | sudo tee -a /etc/proxychains4.conf"
+
+# Add Tor proxy to config
+alias pcaddtor="echo 'socks5 127.0.0.1 9050' | sudo tee -a /etc/proxychains4.conf"
+
+# Set proxychains to use random chain
+alias pcrandom="sudo sed -i 's/^#random_chain/random_chain/' /etc/proxychains4.conf"
+
+# Set proxychains to use strict chain
+alias pcstrict="sudo sed -i 's/^#strict_chain/strict_chain/' /etc/proxychains4.conf"
+
+# Set proxychains to use dynamic chain
+alias pcdynamic="sudo sed -i 's/^strict_chain/#strict_chain/; s/^random_chain/#random_chain/' /etc/proxychains4.conf"
+
+# Backup proxychains config
+alias pcbackup="sudo cp /etc/proxychains4.conf /etc/proxychains4.conf.bak"
+
+# Restore proxychains config from backup
+alias pcrestore="sudo cp /etc/proxychains4.conf.bak /etc/proxychains4.conf"
+
+# Add a comment to separate proxy lists in config
+alias pccomment="echo '# New proxy list' | sudo tee -a /etc/proxychains4.conf"
+
+# Set proxychains to use quiet mode
+alias pcquiet="sudo sed -i 's/^#quiet_mode/quiet_mode/' /etc/proxychains4.conf"
+
+# Set proxychains DNS to use TCP
+alias pcdnstcp="sudo sed -i 's/^#proxy_dns/proxy_dns/' /etc/proxychains4.conf"
+
+# Change proxychains config to use a specific proxy type only
+alias pcfiltertype="sudo sed -i '/^socks4/d; /^socks5/d; /^http/d' /etc/proxychains4.conf && echo 'Enter proxy type (socks4/socks5/http):' && read type && grep "^$type" /etc/proxychains4.conf.bak | sudo tee -a /etc/proxychains4.conf"
+
+# Add a custom proxy with user input
+alias pcaddcustom="echo 'Enter proxy type (socks4/socks5/http):' && read type && echo 'Enter IP:' && read ip && echo 'Enter port:' && read port && echo "$type $ip $port" | sudo tee -a /etc/proxychains4.conf"
