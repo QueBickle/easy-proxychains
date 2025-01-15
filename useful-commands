@@ -1,0 +1,29 @@
+# Edit proxychains configuration file
+alias pcedit="sudo nano /etc/proxychains4.conf"
+
+# Start a basic proxychains session with Firefox
+alias pcweb="proxychains4 firefox"
+
+# Run a curl request through proxychains
+alias pccurl="proxychains4 curl"
+
+# Check your IP address through proxychains
+alias pcip="proxychains4 curl ipinfo.io"
+
+# Use proxychains with nmap for stealthy scanning
+alias pcnmap="proxychains4 nmap -sT -Pn"
+
+# Start Tor service and launch proxychains with Firefox
+alias pctor="sudo service tor start && proxychains4 firefox"
+
+# Use proxychains with SSH
+alias pcssh="proxychains4 ssh"
+
+# Run wget through proxychains
+alias pcwget="proxychains4 wget"
+
+# Use proxychains with Python scripts
+alias pcpy="proxychains4 python3"
+
+# Quick check if proxychains is working
+alias pctest="proxychains4 wget -qO- https://api.ipify.org; echo"
